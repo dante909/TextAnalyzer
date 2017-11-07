@@ -11,6 +11,8 @@ namespace LexerAnalyzer.Classes
     {
         
         List<string> listWords = new List<string>();
+        List<string> listSentences = new List<string>();
+        List<int> listCounts = new List<int>();
 
         public Dictionary<string,int> Corcondance(string readPath)
         {
@@ -26,25 +28,16 @@ namespace LexerAnalyzer.Classes
                     listCounts.Add(1);
                 }
                 else listCounts[listWords.IndexOf(word)]++;
-          //  for (int i = 0; i < listWords.Count; i++)
-          //       Console.WriteLine("{0} - {1}", listWords[i], listCounts[i]);
 
             var dic = listWords.Zip(listCounts, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
-            /*
-            foreach(var a in dic)
-            {
-                Console.WriteLine(a);
-            }
-            */
+
             return dic;
         }
 
-        public void ShowWords(string readPath)
+        public void ShowText(string readPath)
         {
-            listWords = TextStream.ReadWords(readPath);
-            foreach(var word in listWords)
-                Console.WriteLine(word);
+            Console.WriteLine(TextStream.Read(readPath));
         }
 
         public void ToGroup(Dictionary<string, int> dic)
@@ -59,8 +52,31 @@ namespace LexerAnalyzer.Classes
                 Console.Write("\n{0}\n",char.ToUpper(groupOfWords.Key));
                 foreach (var word in groupOfWords)
                 {
-                    Console.WriteLine("{0}..........{1}: ", word.Key, word.Value);
+                    Console.WriteLine("{0}...............{1}", word.Key, word.Value);
                 }
+            }
+        }
+
+        public void FindSentences(string readPath)
+        {
+            listWords = TextStream.ReadWords(readPath);
+            listSentences = TextStream.ReadSentences(readPath);
+
+            var distinctListWods = listWords.Distinct();
+            listWords = distinctListWods.ToList();
+
+            for (int i = 0; i < listWords.Count; i++)
+            {
+                Console.Write("{0}: ", listWords[i]);
+                for(int j = 0; j < listSentences.Count; j++)
+                {
+                    if (listSentences[j].Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
+                        StringSplitOptions.RemoveEmptyEntries).Contains(listWords[i]))
+                    {
+                        Console.Write("{0} ", j+1);
+                    }             
+                }
+                Console.WriteLine();
             }
         }
 
