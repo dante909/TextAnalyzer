@@ -1,0 +1,6 @@
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\bin\Debug\LexerAnalyzer.exe.config
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\bin\Debug\LexerAnalyzer.exe
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\bin\Debug\LexerAnalyzer.pdb
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\obj\Debug\LexerAnalyzer.csprojResolveAssemblyReference.cache
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\obj\Debug\LexerAnalyzer.exe
+D:\Projects_epam\LexerAnalyzer\LexerAnalyzer\obj\Debug\LexerAnalyzer.pdb
