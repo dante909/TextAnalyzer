@@ -13,14 +13,15 @@ namespace LexerAnalyzer.Classes
             string readPath = "D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Input.txt";
             
             Parser parser = new Parser();
-            parser.ShowText(readPath); 
-            parser.ToGroup(parser.Corcondance(readPath));
-            Console.WriteLine();
-            int lengthWord = 3;
-            Console.WriteLine($"Length of word that should be replaced is: {lengthWord}");
-            Console.WriteLine(parser.Replace(TextStream.Read(readPath), "ЗАМЕНА", lengthWord));
-            Console.WriteLine();
+            parser.Corcondance(readPath);
             parser.FindSentences(readPath);
+            parser.ShowText(readPath);
+            int lengthWord = 3;
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter("D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Output.txt", true))
+            {
+                file.WriteLine($"Length of words that should be replaced is: {lengthWord}");
+                file.WriteLine(parser.Replace(Reader.Read(readPath), "ЗАМЕНА", lengthWord));
+            }
         }
     }
 }

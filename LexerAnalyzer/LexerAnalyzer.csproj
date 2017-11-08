@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Parser.cs" />
-    <Compile Include="Classes\TextStream.cs" />
+    <Compile Include="Classes\Reader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

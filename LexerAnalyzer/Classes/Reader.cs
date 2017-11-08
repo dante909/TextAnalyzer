@@ -7,7 +7,7 @@ using System.IO;
 
 namespace LexerAnalyzer.Classes
 {
-    public static class TextStream
+    public static class Reader
     {
         public static List<string> ReadWords(string readPath)
         {

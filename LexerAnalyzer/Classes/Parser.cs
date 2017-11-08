@@ -14,10 +14,9 @@ namespace LexerAnalyzer.Classes
         List<string> listSentences = new List<string>();
         List<int> listCounts = new List<int>();
 
-        public Dictionary<string,int> Corcondance(string readPath)
+        public void Corcondance(string readPath)
         {
-            List<int> listCounts = new List<int>();
-            listWords = TextStream.ReadWords(readPath);
+            listWords = Reader.ReadWords(readPath);
             string[] arrayWords = listWords.ToArray();
             listWords.Clear();
 
@@ -32,51 +31,61 @@ namespace LexerAnalyzer.Classes
             var dic = listWords.Zip(listCounts, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
 
-            return dic;
-        }
-
-        public void ShowText(string readPath)
-        {
-            Console.WriteLine(TextStream.Read(readPath));
-        }
-
-        public void ToGroup(Dictionary<string, int> dic)
-        {
             var wordQuery = from word in dic
                             group word by word.Key.ToLowerInvariant().ElementAt(0) into wordGroup
                             orderby wordGroup.Key
                             select wordGroup;
 
-            foreach (var groupOfWords in wordQuery)
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter("D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Output.txt"))
             {
-                Console.Write("\n{0}\n",char.ToUpper(groupOfWords.Key));
-                foreach (var word in groupOfWords)
+                foreach (var groupOfWords in wordQuery)
                 {
-                    Console.WriteLine("{0}...............{1}", word.Key, word.Value);
+                    file.WriteLine();
+                    file.Write("{0}", char.ToUpper(groupOfWords.Key));
+                    file.WriteLine();
+                    foreach (var word in groupOfWords)
+                    {
+                        file.WriteLine("{0}...............{1}", word.Key, word.Value);
+                    }
                 }
             }
         }
 
+        public void ShowText(string readPath)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter("D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Output.txt", true))
+            {
+                file.WriteLine();
+                file.WriteLine(Reader.Read(readPath));
+                file.WriteLine();
+            }
+            
+        }
+
         public void FindSentences(string readPath)
         {
-            listWords = TextStream.ReadWords(readPath);
-            listSentences = TextStream.ReadSentences(readPath);
+            listWords = Reader.ReadWords(readPath);
+            listSentences = Reader.ReadSentences(readPath);
 
             var distinctListWods = listWords.Distinct();
             listWords = distinctListWods.ToList();
 
-            for (int i = 0; i < listWords.Count; i++)
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter("D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Output.txt", true))
             {
-                Console.Write("{0}: ", listWords[i]);
-                for(int j = 0; j < listSentences.Count; j++)
+                file.WriteLine();
+                for (int i = 0; i < listWords.Count; i++)
                 {
-                    if (listSentences[j].Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
-                        StringSplitOptions.RemoveEmptyEntries).Contains(listWords[i]))
+                    file.Write("{0}: ", listWords[i]);
+                    for (int j = 0; j < listSentences.Count; j++)
                     {
-                        Console.Write("{0} ", j+1);
-                    }             
+                        if (listSentences[j].Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
+                            StringSplitOptions.RemoveEmptyEntries).Contains(listWords[i]))
+                        {
+                            file.Write("{0} ", j + 1);
+                        }
+                    }
+                    file.WriteLine();
                 }
-                Console.WriteLine();
             }
         }
 
