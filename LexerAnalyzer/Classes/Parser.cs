@@ -16,6 +16,19 @@ namespace LexerAnalyzer.Classes
 
         public void Corcondance(string readPath)
         {
+            listSentences = Reader.ReadSentences(readPath);
+            List<int> listKeysSentences = new List<int>();
+            int i = 1;
+            foreach (var ls in listSentences)
+            {
+                listKeysSentences.Add(i);
+                i++;
+            }
+
+            var dicSentences = listSentences.Zip(listKeysSentences, (k, v) => new { k, v })
+              .ToDictionary(x => x.k, x => x.v);
+
+
             listWords = Reader.ReadWords(readPath);
             string[] arrayWords = listWords.ToArray();
             listWords.Clear();
@@ -28,10 +41,10 @@ namespace LexerAnalyzer.Classes
                 }
                 else listCounts[listWords.IndexOf(word)]++;
 
-            var dic = listWords.Zip(listCounts, (k, v) => new { k, v })
+            var dicWords = listWords.Zip(listCounts, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
 
-            var wordQuery = from word in dic
+            var wordQuery = from word in dicWords
                             group word by word.Key.ToLowerInvariant().ElementAt(0) into wordGroup
                             orderby wordGroup.Key
                             select wordGroup;
@@ -45,7 +58,15 @@ namespace LexerAnalyzer.Classes
                     file.WriteLine();
                     foreach (var word in groupOfWords)
                     {
-                        file.WriteLine("{0}...............{1}", word.Key, word.Value);
+                        file.Write("{0}...............{1}: ", word.Key, word.Value);
+                        foreach (var sentence in dicSentences)
+                        {
+                            if (sentence.Key.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
+                            StringSplitOptions.RemoveEmptyEntries).Contains(word.Key))
+                                file.Write("{0} ", sentence.Value);
+                        }
+
+                        file.WriteLine();
                     }
                 }
             }
