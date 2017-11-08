@@ -17,6 +17,9 @@ namespace LexerAnalyzer.Classes
         public void Corcondance(string readPath)
         {
             listSentences = Reader.ReadSentences(readPath);
+            var distinctListSentences = listSentences.Distinct();
+            listSentences = distinctListSentences.ToList();
+
             List<int> listKeysSentences = new List<int>();
             int i = 1;
             foreach (var ls in listSentences)
@@ -27,7 +30,6 @@ namespace LexerAnalyzer.Classes
 
             var dicSentences = listSentences.Zip(listKeysSentences, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
-
 
             listWords = Reader.ReadWords(readPath);
             string[] arrayWords = listWords.ToArray();
@@ -62,10 +64,9 @@ namespace LexerAnalyzer.Classes
                         foreach (var sentence in dicSentences)
                         {
                             if (sentence.Key.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
-                            StringSplitOptions.RemoveEmptyEntries).Contains(word.Key))
+                                StringSplitOptions.RemoveEmptyEntries).Contains(word.Key))
                                 file.Write("{0} ", sentence.Value);
-                        }
-
+                       }
                         file.WriteLine();
                     }
                 }
@@ -79,9 +80,9 @@ namespace LexerAnalyzer.Classes
                 file.WriteLine();
                 file.WriteLine(Reader.Read(readPath));
                 file.WriteLine();
-            }
-            
+            }           
         }
+
 
         public void FindSentences(string readPath)
         {
@@ -108,7 +109,7 @@ namespace LexerAnalyzer.Classes
                     file.WriteLine();
                 }
             }
-        }
+        }       
 
         public string Replace(string text, string newWord, int matchingWordLength)
         {
