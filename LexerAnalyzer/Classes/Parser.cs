@@ -12,15 +12,12 @@ namespace LexerAnalyzer.Classes
         
         List<string> listWords = new List<string>();
         List<string> listSentences = new List<string>();
-        List<int> listCounts = new List<int>();
+        List<int> listKeyWords = new List<int>();
+        List<int> listKeysSentences = new List<int>();
 
         public void Corcondance(string readPath)
         {
             listSentences = Reader.ReadSentences(readPath);
-            var distinctListSentences = listSentences.Distinct();
-            listSentences = distinctListSentences.ToList();
-
-            List<int> listKeysSentences = new List<int>();
             int i = 1;
             foreach (var ls in listSentences)
             {
@@ -28,7 +25,7 @@ namespace LexerAnalyzer.Classes
                 i++;
             }
 
-            var dicSentences = listSentences.Zip(listKeysSentences, (k, v) => new { k, v })
+            var dicSentences = listKeysSentences.Zip(listSentences, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
 
             listWords = Reader.ReadWords(readPath);
@@ -39,11 +36,11 @@ namespace LexerAnalyzer.Classes
                 if (!listWords.Contains(word))
                 {
                     listWords.Add(word);
-                    listCounts.Add(1);
+                    listKeyWords.Add(1);
                 }
-                else listCounts[listWords.IndexOf(word)]++;
+                else listKeyWords[listWords.IndexOf(word)]++;
 
-            var dicWords = listWords.Zip(listCounts, (k, v) => new { k, v })
+            var dicWords = listWords.Zip(listKeyWords, (k, v) => new { k, v })
               .ToDictionary(x => x.k, x => x.v);
 
             var wordQuery = from word in dicWords
@@ -63,9 +60,10 @@ namespace LexerAnalyzer.Classes
                         file.Write("{0}...............{1}: ", word.Key, word.Value);
                         foreach (var sentence in dicSentences)
                         {
-                            if (sentence.Key.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
+                            if (sentence.Value.Split(new char[] { '(', ')','"','«', '»', '—', '\n', '\r',
+                                '.', '?', '!', ' ', ';', ':', ',' },
                                 StringSplitOptions.RemoveEmptyEntries).Contains(word.Key))
-                                file.Write("{0} ", sentence.Value);
+                                file.Write("{0} ", sentence.Key);
                        }
                         file.WriteLine();
                     }
@@ -82,34 +80,6 @@ namespace LexerAnalyzer.Classes
                 file.WriteLine();
             }           
         }
-
-
-        public void FindSentences(string readPath)
-        {
-            listWords = Reader.ReadWords(readPath);
-            listSentences = Reader.ReadSentences(readPath);
-
-            var distinctListWods = listWords.Distinct();
-            listWords = distinctListWods.ToList();
-
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter("D:\\Projects_epam\\LexerAnalyzer\\LexerAnalyzer\\Output.txt", true))
-            {
-                file.WriteLine();
-                for (int i = 0; i < listWords.Count; i++)
-                {
-                    file.Write("{0}: ", listWords[i]);
-                    for (int j = 0; j < listSentences.Count; j++)
-                    {
-                        if (listSentences[j].Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' },
-                            StringSplitOptions.RemoveEmptyEntries).Contains(listWords[i]))
-                        {
-                            file.Write("{0} ", j + 1);
-                        }
-                    }
-                    file.WriteLine();
-                }
-            }
-        }       
 
         public string Replace(string text, string newWord, int matchingWordLength)
         {

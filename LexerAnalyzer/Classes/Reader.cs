@@ -12,7 +12,7 @@ namespace LexerAnalyzer.Classes
         public static List<string> ReadWords(string readPath)
         {
             string textFromFile = File.ReadAllText(readPath, Encoding.Default);
-            char[] separators = { '\r', '\n', ' ', ',', '.', '-', '(', ')', '!', '?', ':', ';' };
+            char[] separators = {'"', '«', '»', '—', '\r', '\n', ' ', ',', '.', '-', '(', ')', '!', '?', ':', ';' };
             List<string> listWords = textFromFile.Split(separators, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
             return listWords;
         }
